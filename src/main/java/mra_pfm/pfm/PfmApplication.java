@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Date;
+
 
 @SpringBootApplication
 public class PfmApplication implements CommandLineRunner {
@@ -26,7 +26,7 @@ public class PfmApplication implements CommandLineRunner {
 				.gender(UserProfile.Gender.MALE)
 				.imageUrl("https://example.com/johndoe.jpg")
 				.about("I am a software developer.")
-				.dateOfBirth(new Date())
+				.dateOfBirth(java.time.LocalDate.of(1990, 5, 15))
 				.build();
 
 		Users user = Users.builder()

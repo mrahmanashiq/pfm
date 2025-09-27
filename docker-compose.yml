@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: pfm-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pfm
+      MYSQL_USER: pfm_user
+      MYSQL_PASSWORD: pfm_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - pfm-network
+    restart: unless-stopped
+
+  # Spring Boot Backend
+  backend:
+    build: .
+    container_name: pfm-backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_URL=jdbc:mysql://mysql:3306/pfm
+      - DB_USERNAME=pfm_user
+      - DB_PASSWORD=pfm_password
+      - JWT_SECRET=docker-jwt-secret-key-change-this-in-production-environment
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mysql
+    networks:
+      - pfm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build: ./pfm-client
+    container_name: pfm-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8090/api/v1
+    depends_on:
+      - backend
+    networks:
+      - pfm-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  pfm-network:
+    driver: bridge

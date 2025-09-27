@@ -6,7 +6,7 @@ import mra_pfm.pfm.entity.Users;
 import mra_pfm.pfm.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -40,8 +40,8 @@ public class UserService {
                 .userType(usersDto.getUserType() != null ? Users.UserType.valueOf(usersDto.getUserType()) : Users.UserType.NORMAL)
                 .imageName(usersDto.getImageName())
                 .status(usersDto.getStatus() != null ? Users.Status.valueOf(usersDto.getStatus()) : Users.Status.ACTIVE)
-                .createdAt(usersDto.getCreatedAt() != null ? new Date(usersDto.getCreatedAt()) : null)
-                .updatedAt(usersDto.getUpdatedAt() != null ? new Date(usersDto.getUpdatedAt()) : null)
+                .createdAt(usersDto.getCreatedAt())
+                .updatedAt(usersDto.getUpdatedAt())
                 .build();
     }
 
@@ -58,8 +58,8 @@ public class UserService {
                 .userType(user.getUserType().name())
                 .imageName(user.getImageName())
                 .status(user.getStatus().name())
-                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
-                .updatedAt(user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : null)
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
