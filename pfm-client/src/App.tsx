@@ -1,11 +1,14 @@
 import React from 'react';
+import { MainLayout } from './components/Layout/MainLayout';
+
 function App() {
   return (
-      <>
-          <h1 className="text-3xl font-bold text-red-600">
-            PFM - Personal Finance Manager
-          </h1>
-      </>
+    <MainLayout>
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold text-foreground">Welcome to PFM</h2>
+        <p className="text-muted-foreground">Your personal finance management dashboard</p>
+      </div>
+    </MainLayout>
   );
 }
 
