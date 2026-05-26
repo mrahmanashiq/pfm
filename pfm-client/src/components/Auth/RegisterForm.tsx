@@ -11,9 +11,10 @@ interface RegisterFormData {
 
 interface RegisterFormProps {
   onSubmit?: (data: Omit<RegisterFormData, 'confirmPassword'>) => void;
+  onSwitchToLogin?: () => void;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onSwitchToLogin }) => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const password = watch('password');
@@ -135,7 +136,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <button className="text-primary hover:underline">Login</button>
+          <button type="button" onClick={onSwitchToLogin} className="text-primary hover:underline">Login</button>
         </p>
       </div>
     </div>

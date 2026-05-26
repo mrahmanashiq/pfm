@@ -1,12 +1,5 @@
 import React from 'react';
-
-interface Account {
-  id: string;
-  name: string;
-  type: string;
-  balance: number;
-  currency: string;
-}
+import { Account } from './AccountList';
 
 interface AccountCardProps {
   account: Account;
@@ -20,7 +13,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, onEdit, onDel
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold text-foreground">{account.name}</h3>
-          <p className="text-sm text-muted-foreground">{account.type}</p>
+          <p className="text-sm text-muted-foreground">{account.accountType}</p>
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold text-foreground">
@@ -49,4 +42,3 @@ export const AccountCard: React.FC<AccountCardProps> = ({ account, onEdit, onDel
     </div>
   );
 };
-

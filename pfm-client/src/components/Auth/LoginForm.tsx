@@ -8,9 +8,10 @@ interface LoginFormData {
 
 interface LoginFormProps {
   onSubmit?: (data: LoginFormData) => void;
+  onSwitchToRegister?: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onSwitchToRegister }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,7 +81,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Don't have an account?{' '}
-          <button className="text-primary hover:underline">Sign up</button>
+          <button type="button" onClick={onSwitchToRegister} className="text-primary hover:underline">Sign up</button>
         </p>
       </div>
     </div>

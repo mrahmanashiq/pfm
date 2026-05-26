@@ -1,32 +1,25 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
-interface Account {
-  id?: string;
-  name: string;
-  type: string;
-  balance: number;
-  currency: string;
-}
+import { Account, AccountInput } from './AccountList';
 
 interface AccountFormProps {
   account?: Account | null;
-  onSubmit?: (data: Omit<Account, 'id'>) => void;
+  onSubmit?: (data: AccountInput) => void;
   onCancel?: () => void;
 }
 
 export const AccountForm: React.FC<AccountFormProps> = ({ account, onSubmit, onCancel }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<Account>({
+  const { register, handleSubmit, formState: { errors } } = useForm<AccountInput>({
     defaultValues: account || {
       name: '',
-      type: 'CHECKING',
+      accountType: 'CHECKING',
       balance: 0,
-      currency: '$',
+      currency: 'USD',
     },
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const onFormSubmit = async (data: Account) => {
+  const onFormSubmit = async (data: AccountInput) => {
     setIsLoading(true);
     try {
       await onSubmit?.(data);
@@ -58,21 +51,25 @@ export const AccountForm: React.FC<AccountFormProps> = ({ account, onSubmit, onC
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="type" className="block text-sm font-medium mb-2">
+            <label htmlFor="accountType" className="block text-sm font-medium mb-2">
               Account Type
             </label>
             <select
-              {...register('type', { required: 'Account type is required' })}
-              id="type"
+              {...register('accountType', { required: 'Account type is required' })}
+              id="accountType"
               className="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="CHECKING">Checking</option>
               <option value="SAVINGS">Savings</option>
               <option value="CREDIT_CARD">Credit Card</option>
+              <option value="CASH">Cash</option>
               <option value="INVESTMENT">Investment</option>
+              <option value="LOAN">Loan</option>
+              <option value="MORTGAGE">Mortgage</option>
+              <option value="CRYPTO">Crypto</option>
             </select>
-            {errors.type && (
-              <p className="text-destructive text-sm mt-1">{errors.type.message}</p>
+            {errors.accountType && (
+              <p className="text-destructive text-sm mt-1">{errors.accountType.message}</p>
             )}
           </div>
           <div>
@@ -84,9 +81,11 @@ export const AccountForm: React.FC<AccountFormProps> = ({ account, onSubmit, onC
               id="currency"
               className="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <option value="$">USD ($)</option>
-              <option value="€">EUR (€)</option>
-              <option value="£">GBP (£)</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="JPY">JPY</option>
+              <option value="AUD">AUD</option>
             </select>
             {errors.currency && (
               <p className="text-destructive text-sm mt-1">{errors.currency.message}</p>
@@ -95,7 +94,7 @@ export const AccountForm: React.FC<AccountFormProps> = ({ account, onSubmit, onC
         </div>
         <div>
           <label htmlFor="balance" className="block text-sm font-medium mb-2">
-            Initial Balance
+            {account ? 'Balance' : 'Initial Balance'}
           </label>
           <input
             {...register('balance', {
@@ -134,4 +133,3 @@ export const AccountForm: React.FC<AccountFormProps> = ({ account, onSubmit, onC
     </div>
   );
 };
-
