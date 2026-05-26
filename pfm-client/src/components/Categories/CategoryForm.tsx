@@ -1,26 +1,18 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
-interface Category {
-  id?: string;
-  name: string;
-  type: string;
-  description?: string;
-  color?: string;
-  icon?: string;
-}
+import { Category, CategoryInput } from './CategoryList';
 
 interface CategoryFormProps {
   category?: Category | null;
-  onSubmit?: (data: Omit<Category, 'id'>) => void;
+  onSubmit?: (data: CategoryInput) => void;
   onCancel?: () => void;
 }
 
 export const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCancel }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<Category>({
+  const { register, handleSubmit, formState: { errors } } = useForm<CategoryInput>({
     defaultValues: category || {
       name: '',
-      type: 'EXPENSE',
+      categoryType: 'EXPENSE',
       description: '',
       color: '#6366f1',
       icon: '',
@@ -28,7 +20,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, 
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const onFormSubmit = async (data: Category) => {
+  const onFormSubmit = async (data: CategoryInput) => {
     setIsLoading(true);
     try {
       await onSubmit?.(data);
@@ -60,20 +52,20 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, 
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="type" className="block text-sm font-medium mb-2">
+            <label htmlFor="categoryType" className="block text-sm font-medium mb-2">
               Type
             </label>
             <select
-              {...register('type', { required: 'Type is required' })}
-              id="type"
+              {...register('categoryType', { required: 'Type is required' })}
+              id="categoryType"
               className="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="INCOME">Income</option>
               <option value="EXPENSE">Expense</option>
               <option value="TRANSFER">Transfer</option>
             </select>
-            {errors.type && (
-              <p className="text-destructive text-sm mt-1">{errors.type.message}</p>
+            {errors.categoryType && (
+              <p className="text-destructive text-sm mt-1">{errors.categoryType.message}</p>
             )}
           </div>
           <div>

@@ -1,25 +1,51 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CategoryCard } from './CategoryCard';
 import { CategoryForm } from './CategoryForm';
+import { categoryAPI } from '../../services/api';
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
-  type: string;
+  categoryType: string;
   description?: string;
   color?: string;
   icon?: string;
 }
 
+export type CategoryInput = Omit<Category, 'id'>;
+
 export const CategoryList: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [categories, setCategories] = useState<Category[]>([
-    { id: '1', name: 'Groceries', type: 'EXPENSE', color: '#10b981', icon: '🛒', description: 'Food and household supplies' },
-    { id: '2', name: 'Salary', type: 'INCOME', color: '#3b82f6', icon: '💼', description: 'Monthly paycheck' },
-    { id: '3', name: 'Utilities', type: 'EXPENSE', color: '#f59e0b', icon: '💡', description: 'Electricity, water, internet' },
-  ]);
+  const normalize = (raw: any): Category => ({
+    id: String(raw.id),
+    name: raw.name,
+    categoryType: raw.categoryType,
+    description: raw.description,
+    color: raw.color,
+    icon: raw.icon,
+  });
+
+  const loadCategories = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await categoryAPI.getAll();
+      setCategories(Array.isArray(data) ? data.map(normalize) : []);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Failed to load categories');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   const handleAdd = () => {
     setEditingCategory(null);
@@ -31,22 +57,31 @@ export const CategoryList: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (categoryId: string) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
-      setCategories(categories.filter(c => c.id !== categoryId));
+  const handleDelete = async (categoryId: string) => {
+    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    try {
+      await categoryAPI.delete(categoryId);
+      setCategories(prev => prev.filter(c => c.id !== categoryId));
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Failed to delete category');
     }
   };
 
-  const handleSubmit = (data: Omit<Category, 'id'>) => {
-    if (editingCategory) {
-      setCategories(categories.map(c =>
-        c.id === editingCategory.id ? { ...data, id: editingCategory.id } : c
-      ));
-    } else {
-      setCategories([...categories, { ...data, id: Date.now().toString() }]);
+  const handleSubmit = async (data: CategoryInput) => {
+    try {
+      if (editingCategory) {
+        const updated = await categoryAPI.update(editingCategory.id, data);
+        const normalized = normalize(updated);
+        setCategories(prev => prev.map(c => c.id === editingCategory.id ? normalized : c));
+      } else {
+        const created = await categoryAPI.create(data);
+        setCategories(prev => [...prev, normalize(created)]);
+      }
+      setShowForm(false);
+      setEditingCategory(null);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Failed to save category');
     }
-    setShowForm(false);
-    setEditingCategory(null);
   };
 
   return (
@@ -66,6 +101,12 @@ export const CategoryList: React.FC = () => {
         </button>
       </div>
 
+      {error && (
+        <div className="p-3 bg-destructive/10 border border-destructive text-destructive rounded-md text-sm">
+          {error}
+        </div>
+      )}
+
       {showForm && (
         <CategoryForm
           category={editingCategory}
@@ -77,16 +118,22 @@ export const CategoryList: React.FC = () => {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            category={category}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-muted-foreground">Loading categories...</p>
+      ) : categories.length === 0 ? (
+        <p className="text-muted-foreground">No categories yet. Click "Add Category" to create one.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              category={category}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

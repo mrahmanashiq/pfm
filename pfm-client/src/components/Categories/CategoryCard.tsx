@@ -1,13 +1,5 @@
 import React from 'react';
-
-interface Category {
-  id: string;
-  name: string;
-  type: string;
-  color?: string;
-  icon?: string;
-  description?: string;
-}
+import { Category } from './CategoryList';
 
 interface CategoryCardProps {
   category: Category;
@@ -25,7 +17,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onEdit, on
           )}
           <div>
             <h3 className="text-lg font-semibold text-foreground">{category.name}</h3>
-            <p className="text-sm text-muted-foreground">{category.type}</p>
+            <p className="text-sm text-muted-foreground">{category.categoryType}</p>
           </div>
         </div>
         {category.color && (
