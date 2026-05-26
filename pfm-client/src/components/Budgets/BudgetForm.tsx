@@ -14,7 +14,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({ budget, onSubmit, onCanc
     defaultValues: budget || {
       name: '',
       amount: 0,
-      period: 'MONTHLY',
+      budgetPeriod: 'MONTHLY',
       startDate: today,
       endDate: today,
       color: '#6366f1',
@@ -65,10 +65,10 @@ export const BudgetForm: React.FC<BudgetFormProps> = ({ budget, onSubmit, onCanc
             {errors.amount && <p className="text-destructive text-sm mt-1">{errors.amount.message}</p>}
           </div>
           <div>
-            <label htmlFor="period" className="block text-sm font-medium mb-2">Period</label>
+            <label htmlFor="budgetPeriod" className="block text-sm font-medium mb-2">Period</label>
             <select
-              {...register('period', { required: true })}
-              id="period"
+              {...register('budgetPeriod', { required: true })}
+              id="budgetPeriod"
               className="w-full px-4 py-2 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="WEEKLY">Weekly</option>

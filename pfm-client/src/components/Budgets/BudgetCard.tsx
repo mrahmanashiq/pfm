@@ -19,7 +19,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({ budget, onEdit, onDelete
         <div>
           <h3 className="text-lg font-semibold text-foreground">{budget.name}</h3>
           <p className="text-sm text-muted-foreground">
-            {budget.period}{budget.categoryName ? ` • ${budget.categoryName}` : ''}
+            {budget.budgetPeriod}{budget.categoryName ? ` • ${budget.categoryName}` : ''}
           </p>
         </div>
         {budget.color && (

@@ -3,7 +3,7 @@ export interface Budget {
   name: string;
   amount: number;
   spent: number;
-  period: string;
+  budgetPeriod: string;
   startDate: string;
   endDate: string;
   color?: string;
