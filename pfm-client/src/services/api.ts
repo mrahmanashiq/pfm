@@ -77,6 +77,30 @@ export const accountAPI = {
   },
 };
 
+// Category API
+export const categoryAPI = {
+  getAll: async () => {
+    const response = await apiClient.get('/categories');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await apiClient.get(`/categories/${id}`);
+    return response.data;
+  },
+  create: async (categoryData: any) => {
+    const response = await apiClient.post('/categories', categoryData);
+    return response.data;
+  },
+  update: async (id: string, categoryData: any) => {
+    const response = await apiClient.put(`/categories/${id}`, categoryData);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await apiClient.delete(`/categories/${id}`);
+    return response.data;
+  },
+};
+
 // Transaction API
 export const transactionAPI = {
   getAll: async () => {
