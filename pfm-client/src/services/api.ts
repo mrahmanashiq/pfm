@@ -77,6 +77,30 @@ export const accountAPI = {
   },
 };
 
+// Budget API
+export const budgetAPI = {
+  getAll: async () => {
+    const response = await apiClient.get('/budgets');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await apiClient.get(`/budgets/${id}`);
+    return response.data;
+  },
+  create: async (budgetData: any) => {
+    const response = await apiClient.post('/budgets', budgetData);
+    return response.data;
+  },
+  update: async (id: string, budgetData: any) => {
+    const response = await apiClient.put(`/budgets/${id}`, budgetData);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await apiClient.delete(`/budgets/${id}`);
+    return response.data;
+  },
+};
+
 // Transaction API
 export const transactionAPI = {
   getAll: async () => {
