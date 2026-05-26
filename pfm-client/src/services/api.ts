@@ -77,6 +77,30 @@ export const accountAPI = {
   },
 };
 
+// Goal API
+export const goalAPI = {
+  getAll: async () => {
+    const response = await apiClient.get('/goals');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await apiClient.get(`/goals/${id}`);
+    return response.data;
+  },
+  create: async (goalData: any) => {
+    const response = await apiClient.post('/goals', goalData);
+    return response.data;
+  },
+  update: async (id: string, goalData: any) => {
+    const response = await apiClient.put(`/goals/${id}`, goalData);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await apiClient.delete(`/goals/${id}`);
+    return response.data;
+  },
+};
+
 // Transaction API
 export const transactionAPI = {
   getAll: async () => {
